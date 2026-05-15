@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Dashboard - Tapnstream Style</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-yellow: #ffcb45;
+            --bg-gray: #f4f7f6;
+            --text-dark: #1a1a1a;
+            --text-light: #888;
+            --accent-teal: #066b5e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body { background-color: #e0e5e2; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+
+        .dashboard {
+            background: var(--bg-gray);
+            width: 1200px;
+            height: 850px;
+            border-radius: 24px;
+            display: grid;
+            grid-template-columns: 200px 1fr 320px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+        }
+
+        /* --- LEFT SIDEBAR --- */
+        .sidebar { padding: 30px 20px; background: #fff; border-right: 1px solid #eee; }
+        .back-btn { display: flex; align-items: center; gap: 10px; font-weight: 700; margin-bottom: 40px; cursor: pointer; }
+        .nav-item {
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .nav-item.active { background: var(--primary-yellow); }
+        .nav-item h4 { font-size: 14px; margin-bottom: 4px; }
+        .nav-item p { font-size: 11px; color: var(--text-light); }
+
+        /* --- MAIN CONTENT --- */
+        .main-content { padding: 30px; overflow-y: auto; }
+        .search-bar {
+            background: #fff;
+            padding: 12px 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+        .search-bar input { border: none; outline: none; width: 80%; font-size: 14px; }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .menu-card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 16px;
+            position: relative;
+            transition: 0.3s;
+        }
+        .menu-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .food-img {
+            width: 100%;
+            height: 140px;
+            background: #ddd;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            object-fit: cover;
+        }
+        .badge {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            color: white;
+            font-weight: 600;
+        }
+        .badge.popular { background: #4a69bd; }
+        .badge.discount { background: #eb4d4b; }
+
+        .card-info h3 { font-size: 14px; margin-bottom: 8px; }
+        .card-info p { font-size: 10px; color: var(--text-light); line-height: 1.4; margin-bottom: 15px; }
+        .card-footer { display: flex; justify-content: space-between; align-items: center; }
+        .price { font-weight: 800; color: var(--accent-teal); }
+        .counter { display: flex; align-items: center; gap: 10px; background: #f8f8f8; padding: 4px 10px; border-radius: 20px; }
+        .btn-count { background: var(--accent-teal); color: white; border: none; width: 22px; height: 22px; border-radius: 50%; cursor: pointer; }
+
+        /* --- RIGHT ORDER PANEL --- */
+        .order-panel { background: #fff; padding: 30px 20px; display: flex; flex-direction: column; border-left: 1px solid #eee; }
+        .user-header { display: flex; justify-content: space-between; margin-bottom: 30px; }
+        .order-title { font-size: 16px; margin-bottom: 20px; }
+        
+        .order-item { display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 13px; }
+        .order-item .details { flex: 1; }
+        .order-item h4 { font-size: 13px; margin-bottom: 4px; }
+        .order-item p { font-size: 10px; color: var(--text-light); }
+        
+        .order-summary { margin-top: auto; padding-top: 20px; border-top: 1px solid #eee; }
+        .summary-row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 10px; }
+        
+        .proceed-btn {
+            background: var(--primary-yellow);
+            border: none;
+            width: 100%;
+            padding: 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
+
+
+<script src="config.js"></script>
+<script>
+   
+    fetch(`${API_URL}/item`)
+  .then(res => res.json())
+  .then(data => {
+    let itemName = data.ItemName;
+    let price = data.Price;
+    
+    document.getElementById("itemname").innerText = itemName;
+    
+    document.getElementById("Price").innerText = "$" + price; 
+  })
+  .catch(err => {
+    console.log("ERROR:", err);
+    document.getElementById("itemname").innerText = "Error";
+    document.getElementById("Price").innerText = "Error";
+  });
+
+
+//   function increas(){
+
+//   fetch(`${API_URL}/foodquantity`)
+//     .then(res => res.json())
+//     .then(data => {
+//         const container = document.getElementById("food-quantity");
+//         container.innerHTML = ""; // Purana static data clear karein
+
+//         data.forEach(item => {
+//             // Naya Card ka structure aapke design ke mutabiq
+//             container.innerHTML += `
+               
+//                     <div class="order-item" >
+//             <div class="details">
+//                 <h4>${item.ORDERquantity}</h4>
+               
+//             </div>
+//             <span>x1</span>
+//         </div>
+//             `;
+//         });
+//     })
+//     .catch(err => console.log("ERROR:", err));
+
+
+
+//   }
+
+  
+
+</script>
+<script>
+    fetch(`${API_URL}/item`)
+    .then(res => res.json())
+    .then(data => {
+        const container = document.getElementById("food-container");
+        container.innerHTML = ""; // Purana static data clear karein
+
+        data.forEach(item => {
+            // Naya Card ka structure aapke design ke mutabiq
+            container.innerHTML += `
+                <div class="menu-card">
+                    <span class="badge popular">★ Popular</span>
+                    
+                    <div class="food-img" style="background: url(${item.IMAGEURL}) center/cover;"></div>
+                    
+                    <div class="card-info">
+                        <h3>${item.ItemName}</h3>
+                        
+                        <p>${item.Description}</p>
+                        
+                        <div class="card-footer">
+                            <span class="price">Rs. ${item.Price}</span>
+                            
+                            <div class="counter">
+                                <button class="btn-count" onclick="increas()">-</button> 
+                                1 
+                                <button class="btn-count">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+    })
+    .catch(err => console.log("ERROR:", err));
+</script>
+</head>
+<body>
+
+<div class="dashboard">
+    <div class="sidebar">
+        <div class="back-btn"><span>←</span> Choose Menu</div>
+        <div class="nav-item"><h4>All Menu</h4><p>124 Items</p></div>
+        <div class="nav-item active"><h4>Breakfast</h4><p>13 Items</p></div>
+        <div class="nav-item"><h4>Fastfood</h4><p>9 Items</p></div>
+        <div class="nav-item"><h4>Soups</h4><p>11 Items</p></div>
+        <div class="nav-item"><h4>Pasta</h4><p>8 Items</p></div>
+    </div>
+
+    <div class="main-content">
+        <div class="search-bar">
+            <input type="text" placeholder="Search a dishes...">
+            <span>🔍</span>
+        </div>
+
+        <div class="menu-grid" id="food-container">
+            </div>
+    </div> <div class="order-panel">
+        <div class="user-header">
+            <div>
+                <h3 style="font-size: 15px;">Ariel Hikmat</h3>
+                <p style="font-size: 10px; color: #888;">Order #925 / Dine In</p>
+            </div>
+            <div style="background: var(--accent-teal); color: white; padding: 5px 10px; border-radius: 8px; font-size: 12px;">A4</div>
+        </div>
+        
+        <p style="font-size: 11px; color: #aaa; margin-bottom: 20px;">Wed, July 12, 2023 • 06:12 PM</p>
+        
+        <h3 class="order-title">Order Detail</h3>
+        
+        <div class="order-item" id="food-quantity">
+            <div class="details">
+                <h4>Scrambled eggs with toast</h4>
+                <p>Note: make the dish a bit spicy</p>
+            </div>
+            <span>x1</span>
+        </div>
+
+        <div class="order-summary">
+            <div class="summary-row"><span>Items (5)</span><span>$73.79</span></div>
+            <div class="summary-row"><span>Tax (5%)</span><span>$3.65</span></div>
+            <button onclick="ProceedOrder()" class="proceed-btn">
+                <span>$87.34</span>
+                <span >Proceed Order →</span>
+            </button>
+        </div>
+    </div>
+</div> ```
+
+</body>
+</html>
+<script> 
+function ProceedOrder (){
+
+window.location.href="Payment.html"
+
+}
+</script>
+
+<!-- 
+        <div class="menu-grid">
+            <div class="menu-card">
+                <span class="badge popular">★ Popular</span>
+                <div class="food-img" style="background: url('https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=300&q=80') center/cover;"></div>
+                <div class="card-info">
+                    <h3 id="itemname">load...</h3>
+                    <p>Perfectly seasoned eggs served with a side of warm toast.</p>
+                    <div class="card-footer">
+                        <span class="price" id="Price">$16.99</span>
+                        <div class="counter"><button class="btn-count">-</button> 1 <button class="btn-count">+</button></div>
+                    </div>
+                </div>
+            </div>
+            <div class="menu-card">
+                <div class="food-img" style="background: url('https://images.unsplash.com/photo-1482049016688-2d3e1b311543?auto=format&fit=crop&w=300&q=80') center/cover;"></div>
+                <div class="card-info">
+                    <h3>Greek Yogurt Parfait</h3>
+                    <p>A harmonious blend of creamy Greek yogurt and fresh fruits.</p>
+                    <div class="card-footer">
+                        <span class="price">$21.49</span>
+                        <div class="counter"><button class="btn-count">-</button> 0 <button class="btn-count">+</button></div>
+                    </div>
+                </div>
+            </div>
+            <div class="menu-card">
+                <span class="badge discount">Disc 10%</span>
+                <div class="food-img" style="background: url('https://images.unsplash.com/photo-1510629954389-c1e0da47d414?auto=format&fit=crop&w=300&q=80') center/cover;"></div>
+                <div class="card-info">
+                    <h3>Vegetable Omelette</h3>
+                    <p>Crafted with farm-fresh eggs and colorful vegetables.</p>
+                    <div class="card-footer">
+                        <span class="price">$17.09</span>
+                        <div class="counter"><button class="btn-count">-</button> 0 <button class="btn-count">+</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+<!-- 
+    <div class="menu-grid" id="food-container">
+    </div>
+    <div class="order-panel">
+        <div class="user-header">
+            <div>
+                <h3 style="font-size: 15px;">Ariel Hikmat</h3>
+                <p style="font-size: 10px; color: #888;">Order #925 / Dine In</p>
+            </div>
+            <div style="background: var(--accent-teal); color: white; padding: 5px 10px; border-radius: 8px; font-size: 12px;">A4</div>
+        </div>
+        
+        <p style="font-size: 11px; color: #aaa; margin-bottom: 20px;">Wed, July 12, 2023 • 06:12 PM</p>
+        
+        <h3 class="order-title">Order Detail</h3>
+        
+        <div class="order-item">
+            <div class="details">
+                <h4>Scrambled eggs with toast</h4>
+                <p>Note: make the dish a bit spicy</p>
+            </div>
+            <span>x1</span>
+        </div>
+        <div class="order-item">
+            <div class="details">
+                <h4>Smoked Salmon Bagel</h4>
+            </div>
+            <span>x1</span>
+        </div>
+
+        <div class="order-summary">
+            <div class="summary-row"><span>Items (5)</span><span>$73.79</span></div>
+            <div class="summary-row"><span>Tax (5%)</span><span>$3.65</span></div>
+            <button class="proceed-btn">
+                <span>$87.34</span>
+                <span>Proceed Order →</span>
+            </button>
+        </div>
+    </div>
+</div> -->

@@ -1,0 +1,15 @@
+<h1 id="text">Loading...</h1>
+
+<script>
+const API_URL = "http://localhost:5000";
+
+fetch(API_URL + "/")
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("text").innerText = data;
+  })
+  .catch(err => {
+    console.log("ERROR:", err);
+    document.getElementById("text").innerText = "Error";
+  });
+</script>

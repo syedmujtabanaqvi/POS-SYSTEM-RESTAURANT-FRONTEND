@@ -1,0 +1,326 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Tapnstream</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing:content-box; font-family: Inter, sans-serif; }
+  .dash-wrap { display: flex; min-height: 900px; background: #f4f7f6; border-radius: 12px; overflow: hidden; }
+  .sidebar { width: 180px; background: #fff; padding: 20px 14px; border-right: 0.5px solid #eee; flex-shrink: 0; }
+  .logo { font-weight: 800; font-size: 13px; color: #066b5e; margin-bottom: 28px; }
+  .nav-lnk { display: block; padding: 9px 12px; border-radius: 8px; font-size: 13px; color: #666; margin-bottom: 3px; cursor: pointer; }
+  .nav-lnk.active { background: #ffcb45; color: #333; font-weight: 600; }
+  .nav-lnk:hover { background: #f5f5f5; }
+  .main { flex: 1; padding: 24px; position: relative; }
+  .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
+  .stat { background: #fff; padding: 16px; border-radius: 12px; }
+  .stat h4 { font-size: 11px; color: #888; margin-bottom: 6px; }
+  .stat p { font-size: 20px; font-weight: 700; color: #066b5e; }
+  .tbl-box { background: #fff; padding: 20px; border-radius: 12px; }
+  .tbl-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .tbl-head h3 { font-size: 14px; font-weight: 600; color: #333; }
+  .add-btn { background: #ffcb45; border: none; padding: 9px 18px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; }
+  .add-btn:hover { background: #f5c030; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; padding: 10px 12px; border-bottom: 1.5px solid #eee; color: #999; font-size: 12px; }
+  td { padding: 10px 12px; border-bottom: 0.5px solid #eee; font-size: 13px; color: #333; }
+  .badge { padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge.active { background: #e6f4f1; color: #066b5e; }
+  .badge.out { background: #ffebee; color: #d32f2f; }
+
+  /* OVERLAY */
+  .overlay {
+    
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 10;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+  }
+  .overlay.show { display: flex; }
+
+  /* MODAL */
+  .modal {
+    background: #111111;
+    border-radius: 16px;
+    border: 0.5px solid #2a2a2a;
+    width: 500px;
+    padding: 76px;
+  }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+  }
+  .modal-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+  }
+  .close-btn {
+    background: #222;
+    border: 0.5px solid #333;
+    color: #aaa;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .close-btn:hover { background: #2a2a2a; color: #fff; }
+
+  .field { margin-bottom: 10px; height: auto; }
+  .field label {
+    display: block;
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 7px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+  .field input {
+    width: 100%;
+    padding: 10px 14px;
+    background: #1a1a1a;
+    border: 0.5px solid #2e2e2e;
+    border-radius: 9px;
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .field input::placeholder { color: #444; }
+  .field input:focus { border-color: #ffcb45; }
+
+  .modal-btns { display: flex; gap: 10px; margin-top: 22px; }
+  .btn-cancel {
+    flex: 1;
+    padding: 10px;
+    background: #1a1a1a;
+    border: 0.5px solid #2e2e2e;
+    border-radius: 9px;
+    color: #888;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .btn-cancel:hover { background: #222; color: #ccc; }
+  .btn-submit {
+    flex: 1;
+    padding: 10px;
+    background: #ffcb45;
+    border: none;
+    border-radius: 9px;
+    color: #111;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-submit:hover { background: #f5c030; }
+  .success-msg {
+    display: none;
+    text-align: center;
+    font-size: 12px;
+    color: #4ade80;
+    margin-top: 12px;
+    font-weight: 500;
+  }
+</style>
+
+<div class="dash-wrap">
+  <div class="sidebar">
+    <div class="logo">ADMIN PANEL</div>
+    <div class="nav-lnk active">Dashboard</div>
+    <div class="nav-lnk">Menu Items</div>
+    <div class="nav-lnk">Orders</div>
+    <div class="nav-lnk">Staff</div>
+    <div class="nav-lnk">Settings</div>
+  </div>
+
+  <div class="main">
+    <div class="stats">
+      <div class="stat"><h4>Total Sales</h4><p id="totalsales">$4,820</p></div>
+      <div class="stat"><h4>Total Orders</h4><p id="TotalOrders">1,240</p></div>
+      <div class="stat"><h4>Menu Items</h4><p id="MenuItems">..</p></div>
+      <div class="stat"><h4>Active Staff</h4><p>23</p></div>
+    </div>
+
+    <div class="tbl-box">
+      <div class="tbl-head">
+        <h3>Inventory Management</h3>
+        <button class="add-btn" onclick="document.getElementById('overlay').classList.add('show')">+ Add New Item</button>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Item Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th></tr>
+        </thead>
+        <tbody id="tbl-body">
+          <tr><td>All In One Chocolate Combo</td><td>Breakfast</td><td>$50.00</td><td>10</td><td><span class="badge active">Active</span></td></tr>
+          <tr><td>Scrambled Eggs With Toast</td><td>Breakfast</td><td>$16.99</td><td>0</td><td><span class="badge out">Out of Stock</span></td></tr>
+          <tr><td>Greek Yogurt Parfait</td><td>Fastfood</td><td>$21.49</td><td>24</td><td><span class="badge active">Active</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="overlay" id="overlay">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>Add Menu Item</h3>
+          <button class="close-btn" onclick="closeModal()">✕</button>
+        </div>
+
+        <div class="field">
+          <label>FOOD NAME</label>
+          <input type="text" id="itemName" placeholder="e.g. Chicken Burger" />
+        </div>
+        <div class="field">
+          <label>PRICE ($)</label>
+          <input type="number" id="price" placeholder="e.g. 12.99" min="0" step="0.01" />
+        </div>
+        <div class="field">
+          <label>Category</label>
+          <input type="text" id="Category" placeholder="piza" />
+        </div>
+        <div class="field">
+          <label>Description</label>
+          <input type="text" id="Description" placeholder="Description" />
+        </div>
+         <div class="field">
+          <label>IMAGEURL</label>
+          <input type="text" id="IMAGEURL" placeholder="url" />
+        </div>
+        <div class="field">
+          <label>IsAvailable</label>
+          <input type="number" id="IsAvailable" placeholder="0,1 " min="0" step="1"/>
+        </div>
+       
+
+        <div class="modal-btns">
+          <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+          <button class="btn-submit" onclick="senddata()">Add Item</button>
+        </div>
+        <div class="success-msg" id="success-msg">✓ Item added!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function closeModal() {
+  document.getElementById('overlay').classList.remove('show');
+  document.getElementById('itemName').value = '';
+  document.getElementById('price').value = '';
+  document.getElementById('Category').value = '';
+   document.getElementById('Description').value = '';
+   document.getElementById('IsAvailable').value = '';
+    document.getElementById('IMAGEURL').value = '';
+  document.getElementById('success-msg').style.display = 'none';
+}
+
+</script>
+
+
+<script src="config.js"></script>
+<script>
+
+function addItem() {
+  const name = document.getElementById('itemName').value.trim();
+  const price = parseFloat(document.getElementById('price').value);
+  const Category = document.getElementById('Category').value.trim();
+  const Description = document.getElementById('Description').value.trim();
+  const IsAvailable =parseFloat(document.getElementById('IsAvailable').value);
+    const IMAGEURL = document.getElementById('IMAGEURL').value.trim();
+  if (!name || !price) return;
+  document.getElementById('overlay').style.display = 'none';
+}
+
+function senddata(){
+
+    const itemName = document.getElementById('itemName').value.trim();
+    const price = parseFloat(document.getElementById("price").value);
+    const Category = document.getElementById("Category").value.trim();
+    const Description = document.getElementById("Description").value.trim();
+const IMAGEURL = document.getElementById("IMAGEURL").value.trim();
+const IsAvailable = parseFloat(document.getElementById('IsAvailable').value);
+
+    if (!itemName || !price || !Category) {
+        alert("Please fill all fields first!");
+        return;
+    }
+
+    fetch(`${API_URL}/post`,{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+            ItemName: itemName,
+            Price: price,
+            Category: Category,
+            Description : Description,
+            IMAGEURL:IMAGEURL,
+            IsAvailable :IsAvailable
+            
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert("Data successfully sent!");
+        closeModal();
+    })
+  .catch(err => console.error(err));
+}
+fetch(`${API_URL}/messaege`)
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("text").innerText = data;
+  })
+  .catch(err => {
+    console.log("ERROR:", err);
+    document.getElementById("text").innerText = "Error";
+  });
+
+  fetch(`${API_URL}/totalsales`)
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("totalsales").innerText = data;
+  })
+  .catch(err => {
+    console.log("ERROR:", err);
+    document.getElementById("totalsales").innerText = "Error";
+  });
+
+
+fetch(`${API_URL}/TotalOrders`)
+.then(res=> res.text())
+.then(data=>{
+    document.getElementById("TotalOrders").innerText =  data;
+    // document.getElementById("Price").innerText = "$" + price; 
+}
+)
+ .catch(err => {
+    console.log("ERROR:", err);})
+
+    fetch(`${API_URL}/MenuItems`)
+.then(res=> res.text())
+.then(data=>{
+    document.getElementById("MenuItems").innerText =  data;
+    // document.getElementById("Price").innerText = "$" + price; 
+}
+)
+ .catch(err => {
+    console.log("ERROR:", err);})
+
+
+
+
+</script>

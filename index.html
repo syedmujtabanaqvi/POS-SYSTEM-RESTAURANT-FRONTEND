@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - Tapnstream</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="billing-section">
+                <h1 id="text" > Loading...</h1>
+                <p class="description">Your order will be processed within 24 hours during working days. We will notify you by email once your order has been shipped.</p>
+                
+                <h3>Billing address</h3>
+                <div class="info-grid">
+                    <span class="label">Name</span>
+                    <span class="value" >SYED FIZZAH </span>
+                    
+                    <span class="label">Address</span>
+                    <span class="value">456 Oak St #3b, San Francisco,<br>CA 94102, United States</span>
+                    
+                    <span class="label">Phone</span>
+                    <span class="value">+1 (415) 555-1234</span>
+                    
+                    <span class="label">Email</span>
+                    <span class="value">jane.smith@email.com</span>
+                </div>
+                
+                <button class="track-btn">Track Your Order</button>
+            </div>
+
+            <div class="summary-section">
+                <div class="receipt">
+                    <h2>Order Summary</h2>
+                    <div class="order-meta">
+                        <div>
+                            <p class="meta-label">Date</p>
+                            <p class="meta-value">02 May 2023</p>
+                        </div>
+                        <div>
+                            <p class="meta-label">Order Number</p>
+                            <p class="meta-value">024-125478956</p>
+                        </div>
+                        <div>
+                            <p class="meta-label">Payment Method</p>
+                            <p class="meta-value">Mastercard</p>
+                        </div>
+                    </div>
+
+                    <div class="items-list">
+                        <div class="item">
+                            <div class="item-img" style="background-color: #ffd1dc;"></div>
+                            <div class="item-details">
+                                <p class="item-name" id="itemname">All In One Chocolate Combo</p>
+                                <p class="item-sub">Pack: Medium | Qty: 1</p>
+                            </div>
+                            <p class="price" id="Price">$</p>
+                        </div>
+                        <div class="item">
+                            <div class="item-img" style="background-color: #ffe5b4;"></div>
+                            <div class="item-details">
+                                <p class="item-name">Desire Of Hearts</p>
+                                <p class="item-sub">Pack: Large | Qty: 1</p>
+                            </div>
+                            <p class="price">$50.00</p>
+                        </div>
+                    </div>
+
+                    <div class="totals">
+                        <div class="total-row"><span>Sub Total</span><span>$100.00</span></div>
+                        <div class="total-row"><span>Shipping</span><span>$2.00</span></div>
+                        <div class="total-row"><span>Tax</span><span>$5.00</span></div>
+                        <hr>
+                        <div class="total-row grand-total">
+                            <span>Order Total</span>
+                            <span>$107.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="config.js"></script>
+<script>
+
+fetch(`${API_URL}/messaege`)
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("text").innerText = data;
+  })
+  .catch(err => {
+    console.log("ERROR:", err);
+    document.getElementById("text").innerText = "Error";
+  });
+
+   fetch(`${API_URL}/item`)
+  .then(res => res.json())
+  .then(data => {
+    let itemName = data.ItemName;
+    let price = data.Price;
+    
+    document.getElementById("itemname").innerText = itemName;
+    
+    document.getElementById("Price").innerText = "$" + price; 
+  })
+  .catch(err => {
+    console.log("ERROR:", err);
+    document.getElementById("itemname").innerText = "Error";
+    document.getElementById("Price").innerText = "Error";
+  });
+</script>
+    <style>
+    
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: #fdf2e9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1000px;
+    width: 100%;
+}
+
+.card {
+    background: white;
+    border-radius: 20px;
+    display: flex;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+/* Left Section */
+.billing-section {
+    flex: 1;
+    padding: 60px;
+}
+
+h1 {
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 20px;
+}
+
+.description {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+
+h3 {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 15px 10px;
+    font-size: 14px;
+    margin-bottom: 40px;
+}
+
+.label { font-weight: 600; color: #333; }
+.value { color: #555; }
+
+.track-btn {
+    background-color: #ff7e67;
+    color: white;
+    border: none;
+    padding: 15px 35px;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.track-btn:hover { background-color: #e56d58; }
+
+/* Right Section */
+.summary-section {
+    flex: 1;
+    background-color: #f8f9fa;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.receipt {
+    background: white;
+    width: 100%;
+    padding: 30px;
+    border-radius: 5px;
+    position: relative;
+    /* Zig-zag bottom effect */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+}
+
+.receipt h2 { font-size: 20px; margin-bottom: 25px; }
+
+.order-meta {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed #ddd;
+    margin-bottom: 20px;
+}
+
+.meta-label { font-size: 10px; color: #aaa; text-transform: uppercase; }
+.meta-value { font-size: 12px; font-weight: 700; margin-top: 4px; }
+
+.item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.item-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    margin-right: 15px;
+}
+
+.item-details { flex: 1; }
+.item-name { font-size: 13px; font-weight: 700; }
+.item-sub { font-size: 11px; color: #888; }
+.price { font-size: 13px; font-weight: 700; }
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 10px;
+    color: #666;
+}
+
+hr { border: none; border-top: 1px solid #eee; margin: 15px 0; }
+
+.grand-total {
+    font-size: 18px;
+    font-weight: 800;
+    color: #000;
+}
+
+/* Responsive */
+@media (max-width: 850px) {
+    .card { flex-direction: column; }
+    .billing-section { padding: 40px; }
+}
+    </style>

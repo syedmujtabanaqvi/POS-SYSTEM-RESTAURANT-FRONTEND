@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Method Selector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            padding: 50px;
+            background-color: #f4f4f9;
+        }
+
+        .payment-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 350px;
+        }
+
+        h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .option:hover {
+            border-color: #007bff;
+            background-color: #f0f7ff;
+        }
+
+        input[type="radio"] {
+            margin-right: 15px;
+            transform: scale(1.2);
+        }
+
+        .option label {
+            cursor: pointer;
+            font-weight: bold;
+            flex-grow: 1;
+        }
+
+        .btn-pay {
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-pay:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<div class="payment-container">
+    <h3>Select Payment Method</h3>
+    
+    <form id="paymentForm">
+        <div class="option">
+            <input type="radio" id="card" name="payment" value="Credit/Debit Card" checked>
+            <label for="card">Credit / Debit Card</label>
+        </div>
+
+        <div class="option">
+            <input type="radio" id="paypal" name="payment" value="PayPal">
+            <label for="paypal">PayPal</label>
+        </div>
+
+        <div class="option">
+            <input type="radio" id="upi" name="payment" value="UPI/EasyPaisa">
+            <label for="upi">UPI / EasyPaisa / JazzCash</label>
+        </div>
+
+        <div class="option">
+            <input type="radio" id="cod" name="payment" value="Cash on Delivery">
+            <label for="cod">Cash on Delivery</label>
+        </div>
+
+        <button type="button" class="btn-pay" onclick="processPayment()">Proceed to Pay</button>
+    </form>
+</div>
+
+<script>
+    function processPayment() {
+        const selected = document.querySelector('input[name="payment"]:checked').value;
+        alert("Aapne select kiya hai: " + selected);
+    }
+</script>
+
+</body>
+</html>
