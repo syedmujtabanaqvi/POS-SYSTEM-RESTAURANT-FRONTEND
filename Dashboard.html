@@ -144,37 +144,6 @@
     document.getElementById("Price").innerText = "Error";
   });
 
-
-//   function increas(){
-
-//   fetch(`${API_URL}/foodquantity`)
-//     .then(res => res.json())
-//     .then(data => {
-//         const container = document.getElementById("food-quantity");
-//         container.innerHTML = ""; // Purana static data clear karein
-
-//         data.forEach(item => {
-//             // Naya Card ka structure aapke design ke mutabiq
-//             container.innerHTML += `
-               
-//                     <div class="order-item" >
-//             <div class="details">
-//                 <h4>${item.ORDERquantity}</h4>
-               
-//             </div>
-//             <span>x1</span>
-//         </div>
-//             `;
-//         });
-//     })
-//     .catch(err => console.log("ERROR:", err));
-
-
-
-//   }
-
-  
-
 </script>
 <script>
     fetch(`${API_URL}/item`)
@@ -211,10 +180,112 @@
         });
     })
     .catch(err => console.log("ERROR:", err));
+
+</script>
+
+<script>
+ function closeModal() {
+  document.getElementById('overlay').classList.remove('show');
+
+  const name = document.getElementById('cust-name').value='';
+    const phone = document.getElementById('cust-phone').value='';
+  document.getElementById('success-msg').style.display = 'none';
+}
+
+    function saveUserDetail() {
+    const name = document.getElementById('cust-name').value;
+    const phone = document.getElementById('cust-phone').value;
+
+    if (name.trim() === "" || phone.trim() === "") {
+        alert("Please fill in all details!");
+        return;
+    }
+
+    else{
+
+   fetch(`${API_URL}/api/adduserdetail`,{
+
+    method:'POST',
+    headers:{
+        "content-type":"application/json"
+    },
+   body: JSON.stringify({
+  NAME: name,
+  PHONENUMBER: phone
+})
+    
+
+   })
+    .then(res => res.json())
+    .then(data => {
+        alert("Data successfully sent!");
+        closeModal();
+    })
+    
+  .catch(err => console.error(err));
+
+   
+
+
+
+    localStorage.setItem('customerName', name);
+    localStorage.setItem('customerPhone', phone);
+
+    document.querySelector('.user-header h3').innerText = name;
+    
+    document.querySelector('.user-header p').innerText = `Phone: ${phone} / Dine In`;
+
+    document.getElementById('user-modal').style.display = 'none';
+location.reload();
+    }
+
+}
+
+
+window.onload = function() {
+
+    const savedName = localStorage.getItem('customerName');
+
+    if (savedName) {
+        document.getElementById('user-modal').style.display = 'none';
+        document.getElementById('customer-name').innerText = savedName;
+    }
+};
+
+
+
+fetch(`${API_URL}/getcurrentid`)
+  .then(res => res.json())
+  .then(data => {
+    let id = data.currentId;
+      document.getElementById("customer-id").innerText = id;
+  });
+
+
+function ProceedOrder() {
+   
+    window.location.href = "Payment.html";
+}
+
+
 </script>
 </head>
 <body>
-
+<!-- User Details Modal -->
+<div id="user-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; justify-content: center; align-items: center;">
+    <div style="background: white; padding: 40px; border-radius: 20px; width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+        <h2 style="margin-bottom: 10px; color: var(--text-dark);">Welcome to food hub</h2>
+        <p style="color: var(--text-light); font-size: 14px; margin-bottom: 25px;">Please enter user details to view the menu.</p>
+        
+        <input type="text" id="cust-name" placeholder="Enter Full Name" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; outline: none;">
+        
+        <input type="tel" id="cust-phone" placeholder="Phone Number" style="width: 100%; padding: 12px; margin-bottom: 25px; border: 1px solid #ddd; border-radius: 8px; outline: none;">
+        
+        <button onclick="saveUserDetail()" style="width: 100%; background: var(--primary-yellow); border: none; padding: 15px; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 16px;">
+            Continue to Menu
+        </button>
+    </div>
+</div>
 <div class="dashboard">
     <div class="sidebar">
         <div class="back-btn"><span>←</span> Choose Menu</div>
@@ -255,8 +326,11 @@
         </div>
 
         <div class="order-summary">
+            <div class="summary-row"><span>Name</span><span id="customer-name">load..</span></div>
+            <div class="summary-row"><span>id</span><span id="customer-id">load..</span></div>
             <div class="summary-row"><span>Items (5)</span><span>$73.79</span></div>
             <div class="summary-row"><span>Tax (5%)</span><span>$3.65</span></div>
+            
             <button onclick="ProceedOrder()" class="proceed-btn">
                 <span>$87.34</span>
                 <span >Proceed Order →</span>
@@ -274,83 +348,3 @@ window.location.href="Payment.html"
 
 }
 </script>
-
-<!-- 
-        <div class="menu-grid">
-            <div class="menu-card">
-                <span class="badge popular">★ Popular</span>
-                <div class="food-img" style="background: url('https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=300&q=80') center/cover;"></div>
-                <div class="card-info">
-                    <h3 id="itemname">load...</h3>
-                    <p>Perfectly seasoned eggs served with a side of warm toast.</p>
-                    <div class="card-footer">
-                        <span class="price" id="Price">$16.99</span>
-                        <div class="counter"><button class="btn-count">-</button> 1 <button class="btn-count">+</button></div>
-                    </div>
-                </div>
-            </div>
-            <div class="menu-card">
-                <div class="food-img" style="background: url('https://images.unsplash.com/photo-1482049016688-2d3e1b311543?auto=format&fit=crop&w=300&q=80') center/cover;"></div>
-                <div class="card-info">
-                    <h3>Greek Yogurt Parfait</h3>
-                    <p>A harmonious blend of creamy Greek yogurt and fresh fruits.</p>
-                    <div class="card-footer">
-                        <span class="price">$21.49</span>
-                        <div class="counter"><button class="btn-count">-</button> 0 <button class="btn-count">+</button></div>
-                    </div>
-                </div>
-            </div>
-            <div class="menu-card">
-                <span class="badge discount">Disc 10%</span>
-                <div class="food-img" style="background: url('https://images.unsplash.com/photo-1510629954389-c1e0da47d414?auto=format&fit=crop&w=300&q=80') center/cover;"></div>
-                <div class="card-info">
-                    <h3>Vegetable Omelette</h3>
-                    <p>Crafted with farm-fresh eggs and colorful vegetables.</p>
-                    <div class="card-footer">
-                        <span class="price">$17.09</span>
-                        <div class="counter"><button class="btn-count">-</button> 0 <button class="btn-count">+</button></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
-<!-- 
-    <div class="menu-grid" id="food-container">
-    </div>
-    <div class="order-panel">
-        <div class="user-header">
-            <div>
-                <h3 style="font-size: 15px;">Ariel Hikmat</h3>
-                <p style="font-size: 10px; color: #888;">Order #925 / Dine In</p>
-            </div>
-            <div style="background: var(--accent-teal); color: white; padding: 5px 10px; border-radius: 8px; font-size: 12px;">A4</div>
-        </div>
-        
-        <p style="font-size: 11px; color: #aaa; margin-bottom: 20px;">Wed, July 12, 2023 • 06:12 PM</p>
-        
-        <h3 class="order-title">Order Detail</h3>
-        
-        <div class="order-item">
-            <div class="details">
-                <h4>Scrambled eggs with toast</h4>
-                <p>Note: make the dish a bit spicy</p>
-            </div>
-            <span>x1</span>
-        </div>
-        <div class="order-item">
-            <div class="details">
-                <h4>Smoked Salmon Bagel</h4>
-            </div>
-            <span>x1</span>
-        </div>
-
-        <div class="order-summary">
-            <div class="summary-row"><span>Items (5)</span><span>$73.79</span></div>
-            <div class="summary-row"><span>Tax (5%)</span><span>$3.65</span></div>
-            <button class="proceed-btn">
-                <span>$87.34</span>
-                <span>Proceed Order →</span>
-            </button>
-        </div>
-    </div>
-</div> -->

@@ -153,7 +153,7 @@
       <div class="stat"><h4>Menu Items</h4><p id="MenuItems">..</p></div>
       <div class="stat"><h4>Active Staff</h4><p>23</p></div>
     </div>
-
+<!-- 
     <div class="tbl-box">
       <div class="tbl-head">
         <h3>Inventory Management</h3>
@@ -169,8 +169,31 @@
           <tr><td>Greek Yogurt Parfait</td><td>Fastfood</td><td>$21.49</td><td>24</td><td><span class="badge active">Active</span></td></tr>
         </tbody>
       </table>
-    </div>
+    </div> -->
+<div class="tbl-box">
+  <div class="tbl-head">
+    <h3>Inventory Management</h3>
+    <button class="add-btn" onclick="document.getElementById('overlay').classList.add('show')">
+      + Add New Item
+    </button>
+  </div>
 
+  <table>
+    <thead>
+      <tr>
+        <th>Item Name</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th>Stock</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+
+    <tbody id="tbl-body">
+      <!-- API yahan data inject karegi -->
+    </tbody>
+  </table>
+</div>
     <div class="overlay" id="overlay">
       <div class="modal">
         <div class="modal-header">
@@ -226,9 +249,10 @@ function closeModal() {
   document.getElementById('success-msg').style.display = 'none';
 }
 
+
+
+
 </script>
-
-
 <script src="config.js"></script>
 <script>
 
@@ -322,5 +346,33 @@ fetch(`${API_URL}/TotalOrders`)
 
 
 
+
+</script>
+<script>
+    //Inventorydetail
+   fetch(`${API_URL}/Inventorydetail`)
+.then(res => res.json())
+.then(data => {
+    const tbody = document.getElementById("tbl-body");
+    tbody.innerHTML = "";
+
+    data.forEach(item => {
+
+        const status = item.Stock > 0 
+            ? `<span class="badge active">Active</span>` 
+            : `<span class="badge out">Out of Stock</span>`;
+
+        tbody.innerHTML += `
+            <tr>
+                <td>${item.ItemName}</td>
+                <td>${item.Category}</td>
+                <td>$${item.Price}</td>
+                <td>${item.Stock}</td>
+                <td>${status}</td>
+            </tr>
+        `;
+    });
+})
+.catch(err => console.log("ERROR:", err));
 
 </script>

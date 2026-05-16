@@ -104,7 +104,16 @@
     function processPayment() {
         const selected = document.querySelector('input[name="payment"]:checked').value;
         alert("Aapne select kiya hai: " + selected);
+    localStorage.clear();
+
+    window.location.href = "Dashboard.html";
     }
+//     function paymentSuccess() {
+
+//     localStorage.clear();
+
+//     window.location.href = "index.html";
+// }
 </script>
 
 </body>
