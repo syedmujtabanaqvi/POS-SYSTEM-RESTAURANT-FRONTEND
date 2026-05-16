@@ -349,25 +349,29 @@ fetch(`${API_URL}/TotalOrders`)
 
 </script>
 <script>
-    //Inventorydetail
-   fetch(`${API_URL}/Inventorydetail`)
+   fetch(`${API_URL}/Inventoryitem`)
 .then(res => res.json())
 .then(data => {
     const tbody = document.getElementById("tbl-body");
     tbody.innerHTML = "";
 
+    
     data.forEach(item => {
 
-        const status = item.Stock > 0 
-            ? `<span class="badge active">Active</span>` 
-            : `<span class="badge out">Out of Stock</span>`;
+       let status;
 
+if (item.IsAvailable === 0 || item.IsAvailable === null) {
+    status = "Out of Stock";
+} else {
+    status = "In Stock";
+}
         tbody.innerHTML += `
             <tr>
                 <td>${item.ItemName}</td>
                 <td>${item.Category}</td>
                 <td>$${item.Price}</td>
-                <td>${item.Stock}</td>
+                
+                <td>${item.IsAvailable}</td>
                 <td>${status}</td>
             </tr>
         `;
