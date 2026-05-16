@@ -258,7 +258,7 @@ fetch(`${API_URL}/getcurrentid`)
   .then(res => res.json())
   .then(data => {
     let id = data.currentId;
-      document.getElementById("customer-id").innerText = id;
+      document.getElementById("customer-id").innerText = id; 
   });
 
 
@@ -266,6 +266,20 @@ function ProceedOrder() {
    
     window.location.href = "Payment.html";
 }
+
+fetch(`${API_URL}/getcurrentorder`)
+  .then(res => res.json())
+  .then(data => {
+    let id = data.currentId;
+      document.getElementById("customer-orderid").innerText = id; 
+  });
+
+
+function ProceedOrder() {
+   
+    window.location.href = "Payment.html";
+}
+
 
 
 </script>

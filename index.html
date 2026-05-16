@@ -11,22 +11,20 @@
     <div class="container">
         <div class="card">
             <div class="billing-section">
-                <h1 id="text" > Loading...</h1>
+                <h1  > Thank you for your purchase!</h1>
                 <p class="description">Your order will be processed within 24 hours during working days. We will notify you by email once your order has been shipped.</p>
                 
                 <h3>Billing address</h3>
                 <div class="info-grid">
                     <span class="label">Name</span>
-                    <span class="value" >SYED FIZZAH </span>
+                    <span class="value" id="customer-name" >SYED FIZZAH </span>
                     
-                    <span class="label">Address</span>
-                    <span class="value">456 Oak St #3b, San Francisco,<br>CA 94102, United States</span>
-                    
+                   
                     <span class="label">Phone</span>
                     <span class="value">+1 (415) 555-1234</span>
                     
                     <span class="label">Email</span>
-                    <span class="value">jane.smith@email.com</span>
+                    <span class="value">ali222@email.com</span>
                 </div>
                 
                 <button class="track-btn">Track Your Order</button>
@@ -38,11 +36,11 @@
                     <div class="order-meta">
                         <div>
                             <p class="meta-label">Date</p>
-                            <p class="meta-value">02 May 2023</p>
+                            <p class="meta-value" id="date-api">02 May 2023</p>
                         </div>
                         <div>
                             <p class="meta-label">Order Number</p>
-                            <p class="meta-value">024-125478956</p>
+                            <p class="meta-value" id="customer-orderid">024-125478956</p>
                         </div>
                         <div>
                             <p class="meta-label">Payment Method</p>
@@ -114,6 +112,34 @@ fetch(`${API_URL}/messaege`)
     document.getElementById("itemname").innerText = "Error";
     document.getElementById("Price").innerText = "Error";
   });
+
+
+  fetch(`${API_URL}/getcurrentorder`)
+  .then(res => res.json())
+  .then(data => {
+    let id = data.currentId;
+      document.getElementById("customer-orderid").innerText = id; 
+  });
+
+  //date-api
+  fetch(`${API_URL}/date-api`)
+  .then(res => res.json())
+  .then(data => {
+    let id = data.currentId;
+      document.getElementById("date-api").innerText = id; 
+  });
+
+  //get name 
+  fetch(`${API_URL}/getname`)
+  .then(res => res.json())
+  .then(data => {
+    let name = data.cName;
+      document.getElementById("customer-name").innerText = name; 
+  });
+
+ 
+
+
 </script>
     <style>
     

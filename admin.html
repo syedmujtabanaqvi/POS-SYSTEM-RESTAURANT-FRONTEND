@@ -141,7 +141,7 @@
     <div class="logo">ADMIN PANEL</div>
     <div class="nav-lnk active">Dashboard</div>
     <div class="nav-lnk">Menu Items</div>
-    <div class="nav-lnk">Orders</div>
+    <div class="nav-lnk"onclick="openorder()" >Orders</div>
     <div class="nav-lnk">Staff</div>
     <div class="nav-lnk">Settings</div>
   </div>
@@ -238,6 +238,16 @@
 </div>
 
 <script>
+
+async function openorder(){
+
+window.location.href="userdetail.html"
+
+
+}
+
+
+
 function closeModal() {
   document.getElementById('overlay').classList.remove('show');
   document.getElementById('itemName').value = '';
