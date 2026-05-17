@@ -144,9 +144,31 @@
     document.getElementById("Price").innerText = "Error";
   });
 
+
 </script>
 <script>
-    fetch(`${API_URL}/item`)
+
+    let cart = {};
+ function increase(id, price, name) {
+    if (!cart[id]) {
+        cart[id] = { qty: 1, price, name };
+    } else {
+        cart[id].qty++;
+    }
+
+    document.getElementById("qty-" + id).innerText = cart[id].qty;
+}
+
+function decrease(id) {
+    if (!cart[id]) return;
+
+    if (cart[id].qty > 1) {
+        cart[id].qty--;
+        document.getElementById("qty-" + id).innerText = cart[id].qty;
+    }
+}
+
+fetch(`${API_URL}/item`)
     .then(res => res.json())
     .then(data => {
         const container = document.getElementById("food-container");
@@ -169,9 +191,11 @@
                             <span class="price">Rs. ${item.Price}</span>
                             
                             <div class="counter">
-                                <button class="btn-count" onclick="increas()">-</button> 
-                                1 
-                                <button class="btn-count">+</button>
+                                <button class="btn-count" onclick="increase(${item.ItemCode})">+</button>
+
+<span id="qty-${item.ItemCode}">1</span>
+
+<button class="btn-count" onclick="decrease(${item.ItemCode})">-</button>
                             </div>
                         </div>
                     </div>
@@ -262,10 +286,9 @@ fetch(`${API_URL}/getcurrentid`)
   });
 
 
-function ProceedOrder() {
-   
-    window.location.href = "Payment.html";
-}
+
+
+
 
 fetch(`${API_URL}/getcurrentorder`)
   .then(res => res.json())
@@ -275,10 +298,10 @@ fetch(`${API_URL}/getcurrentorder`)
   });
 
 
-function ProceedOrder() {
+// function ProceedOrder() {
    
-    window.location.href = "Payment.html";
-}
+//     window.location.href = "Billing.html";
+// }
 
 
 
@@ -336,7 +359,7 @@ function ProceedOrder() {
                 <h4>Scrambled eggs with toast</h4>
                 <p>Note: make the dish a bit spicy</p>
             </div>
-            <span>x1</span>
+            <span id="qty">..</span>
         </div>
 
         <div class="order-summary">
@@ -345,7 +368,7 @@ function ProceedOrder() {
             <div class="summary-row"><span>Items (5)</span><span>$73.79</span></div>
             <div class="summary-row"><span>Tax (5%)</span><span>$3.65</span></div>
             
-            <button onclick="ProceedOrder()" class="proceed-btn">
+            <button onclick="proceedOrder()" class="proceed-btn">
                 <span>$87.34</span>
                 <span >Proceed Order →</span>
             </button>
@@ -356,9 +379,30 @@ function ProceedOrder() {
 </body>
 </html>
 <script> 
-function ProceedOrder (){
+function proceedOrder() {
 
-window.location.href="Payment.html"
+    let orderItems = Object.keys(cart).map(id => ({
+        ItemCode: id,
+        Quantity: cart[id].qty
+    }));
 
+    fetch(`${API_URL}/sendquantity`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            items: orderItems
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log("Order saved:", data);
+        window.location.href = "Payment.html";
+    })
+    .catch(err => console.log(err));
 }
 </script>
+
+
+  
