@@ -170,7 +170,7 @@ hr { border: none; border-top: 1px solid #eee; margin: 15px 0; }
                 <h3>Billing address</h3>
                 <div class="info-grid">
                     <span class="label">Name</span>
-                    <span class="value" id="customer-name" >SYED FIZZAH </span>
+                    <span class="value" id="customer-name" >SYED FIZZAH</span>
                     
                    
                     <span class="label">Phone</span>
@@ -291,17 +291,16 @@ fetch(`${API_URL}/messaege`)
   fetch(`${API_URL}/getname`)
   .then(res => res.json())
   .then(data => {
-    let name = data.cName;
-      document.getElementById("customer-name").innerText = name; 
+   document.getElementById("customer-name").innerText = data.NAME;
   });
 
  
 // get Phone number
-    fetch(`${API_URL}/get-Phone-number`)
+   fetch(`${API_URL}/getPhonenumber`)
   .then(res => res.json())
   .then(data => {
-    let Phone = data.Phone;
-      document.getElementById("customer-Phone").innerText = Phone; 
+    let PHONE = data.currentId.PHONE;
+    document.getElementById("customer-Phone").innerText = PHONE;
   });
 
 </script>
